@@ -1,0 +1,13 @@
+language: node_js
+branches:
+  only:
+    - main
+node_js:
+  - 14
+script:
+  - npm install
+  - npm run build
+notifications:
+  slack:
+    rooms:
+      - secure: "d1iWO3fcKTLx4dTo5Sxn9JCAMn67J+NAZ6ELn3D51WOtL8UBo1hEgxUXP6Cgbh6RRCf+Nd6AyW7AGkv8BWRcVn1lqvpfgDgRWp/XyO11eW2pmrtEgpGmF1yH/yX64BUJ7E0JgeZUV9w2Y3pBFUB32nlSspOEgxeP87dg9yskgBkQHIWpS9oTPuViXKtHHfIAyAF5Y/p8hOWvFnhjlPdfQ74nVFK5KeCmYt6cMcRFqJjiJKXPgc085MWpgq8Wy1ldUI9EmElaaW3u9wS/ZzardrspOuPckqzvT/KXAhGhLSXT3qvM/RruBHaz1oXkwqckVFkOvP3aawiku/mS/Du41N83rKi4o2UiGIv46ICmtMrafPoNkv7Q6jfXe4360biBmxdeP9+ejJ8tIkmJOM0t2FpoPn5gN7hmXCe3+kZ1g2p21VF4Xc3zqxUbeN+JpS5NrP67KuyuxJH2yS+9NcXbhUkFAb46+W/U64G7ETAmnAHjTj9u2EBwt92zspnd1o0woa+y2JZin6s+xc2lIt8NJWxOmjCWyr0OF7O7alG5zxSe0TNfJe9BrL2b3xeCOKnkhfzWNvcc+FZz4q0KPddqqrRapQc+ozwiT0YTTlVxVO+i8SO/3VsgVbnA8moAY8Qbo0WQCdIMAbRjg1AE6zY7AHqK1v8jt+fC4YkbNovkPiw="
