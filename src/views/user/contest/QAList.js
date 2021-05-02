@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useRef, useState, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Typography, Accordion, AccordionSummary,
@@ -8,6 +8,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { HelpOutline, MessageOutlined, Add, } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
+
+
   root: {
     width: '100%',
     marginTop: '10px'
@@ -18,16 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   qatitle: {
     wordWrap: "break-word",
-    [theme.breakpoints.only('xs')]: {
-      maxWidth: "200px",
-    },
-    [theme.breakpoints.only('sm')]: {
-      maxWidth: "400px",
-    },
-
-    [theme.breakpoints.up('md')]: {
-      maxWidth: "800px",
-    }
+    maxWidth: props => props * 0.8,
   },
   fab: {
     margin: 0,
@@ -39,35 +32,27 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
-  useLayoutEffect(() => {
-    function updateSize() {
-      setSize([window.innerWidth, window.innerHeight]);
-    }
-    window.addEventListener('resize', updateSize);
-    updateSize();
-    return () => window.removeEventListener('resize', updateSize);
-  }, []);
-  return size;
-}
-
-const ShowWindowDimensions = (props) => {
-  const [width, height] = useWindowSize();
-  return <span>Window size: {width} x {height}</span>;
-}
-
 const Item = (props) => {
-  const classes = useStyles();
-  const x = props.item
+  const [width, setWidth] = useState(0);
+  const ref = useRef();
+  const handleResize = () => {
+    setWidth(ref.current.offsetWidth)
+  }
+  useEffect(() => {
+    setWidth(ref.current.offsetWidth);
+  }, [ref.current]);
+  window.addEventListener('resize', handleResize)
+  const classes = useStyles(width);
+  const x = props.item;
+
   return (
     <>
-      <Accordion>
+      <Accordion ref={ref} >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          id={x.id}
         >
-          <Typography className={classes.qatitle} component="p" align="left">
+          <Typography className={classes.qatitle}
+            component="p" align="left">
             <HelpOutline />
             {" " + x.question}
           </Typography>
@@ -162,15 +147,13 @@ const QAList = () => {
       <Typography align="center" variant="h4">
         Q    &    A
       </Typography>
-      <ShowWindowDimensions/>
-      <div className={classes.root}>
+      <div className={classes.root}  >
         {
           allClass.map((x) => (
-            <Item key={x.id} item={x} className={classes.heading} />
+            <Item key={x.id} item={x} />
           ))
         }
       </div>
-
       <Fab className={classes.fab} color="primary" aria-label="add" onClick="">
         <Add />
       </Fab>
