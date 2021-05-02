@@ -7,6 +7,8 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { HelpOutline, MessageOutlined, Add, } from '@material-ui/icons';
 
+import QAEdit from './QAEdit';
+
 const useStyles = makeStyles((theme) => ({
 
 
@@ -73,6 +75,10 @@ const Item = (props) => {
 const QAList = () => {
   const classes = useStyles();
   const [allClass, setAllClass] = useState([])
+  const [QAEditOpen, setQAEditOpen] = useState(false);
+  const handleQAEditOpen = () => setQAEditOpen(true);
+  const handleQAEditClose = () => setQAEditOpen(false);
+
   useEffect(() => {
     setAllClass([
       {
@@ -144,6 +150,7 @@ const QAList = () => {
   }, []);
   return (
     <>
+      <QAEdit QAEditopen={QAEditOpen} handleQAEditClose={handleQAEditClose}/>
       <Typography align="center" variant="h4">
         Q    &    A
       </Typography>
@@ -154,7 +161,8 @@ const QAList = () => {
           ))
         }
       </div>
-      <Fab className={classes.fab} color="primary" aria-label="add" onClick="">
+
+      <Fab className={classes.fab} color="primary" aria-label="add" onClick={handleQAEditOpen}>
         <Add />
       </Fab>
     </>
