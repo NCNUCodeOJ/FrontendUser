@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function createData(type, question) {
-  return { type, question };
+function createData(type, question, option1, option2, option3, option4) {
+  return { type, question, option1, option2, option3, option4 };
   // type:
   // 1:選擇
   // 2:是非
@@ -70,8 +70,8 @@ const Info = () => {
   var difficulty = 2.5;
   const difficultyStars = countDifficultyStar(difficulty);
   const Questionrows = [
-    createData(1, '請問在python中print()的用途是?'),
-    createData(2, '在python中input()是輸出'),
+    createData(1, '請問在python中print( )的用途是?', '輸入', '條件判斷式', '輸出', '定義變數'),
+    createData(2, '在python中input( )是輸出'),
     createData(3, '請問在python中輸出是?')
   ];
   const [MultipleAnswer, setMultipleAnswer] = useState("");
@@ -140,7 +140,7 @@ const Info = () => {
           {difficultyStars}
         </Typography>
         <Typography variant="h6" color="error">
-          剩餘時間:
+          剩餘時間: 21小時
         </Typography>
         <div className={classes.box}>
           <Grid container spacing={3}>
@@ -175,6 +175,13 @@ const Info = () => {
                           <Box component="span" fontSize="h6.fontSize">
                             {obj.question}
                           </Box>
+                          <br/>
+                          <Box component="span" fontSize="h6.fontSize">
+                            (A) {obj.option1}
+                            (B) {obj.option2}
+                            (C) {obj.option3}
+                            (D) {obj.option4}
+                          </Box>
                         </Grid>
                       </Grid>
                     </React.Fragment>
@@ -190,7 +197,7 @@ const Info = () => {
                           <nobr>
                             <Box component="span" fontSize="h6.fontSize"
                               className={errorComponent.includes("TrueFalseAnswer") ? classes.errorFont : null}>
-                              1.(<InputBase
+                              2.(<InputBase
                                 id="TrueFalseAnswer"
                                 alignitems="center"
                                 textalign="center"
@@ -223,7 +230,7 @@ const Info = () => {
                         <Grid item>
                           <Box component="span" fontSize="h6.fontSize"
                             className={errorComponent.includes("ShortAnswer") ? classes.errorFont : null} >
-                            1.
+                            3.
                           </Box>
                         </Grid>
                         <Grid item xs={11} md={11}>
