@@ -108,19 +108,19 @@ const Info = () => {
   useEffect(() => {
     const languageFiles = [{
       name: "C",
-      language: "C",
-      value: "someCodeExample",
+      language: "c",
+      value: `#include "config.h"`,
     }, {
       name: "Java",
-      language: "Java",
+      language: "java",
       value: "// System.out.println('Hello World');",
     }, {
       name: "PHP",
-      language: "PHP",
+      language: "php",
       value: "<!-- echo 'Hello World!';  -->",
     }, {
       name: "Python",
-      language: "Python",
+      language: "python",
       value: "# print('Hello World!')",
     }]
     setAllLanguageName(languageFiles);
