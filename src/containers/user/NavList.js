@@ -6,12 +6,13 @@ import {
 } from '@material-ui/core';
 import {
   ExpandLess, ExpandMore, PersonRounded,
-  LaptopMac, EmojiEvents
+  LaptopMac, EmojiEvents, Code,
+  Settings, Home
 } from '@material-ui/icons/';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faChalkboardTeacher, faUserShield
+  faUserShield
 } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,7 +29,7 @@ const AdminLink = () => {
   return (
     <ListItemLink href="/admin/">
       <ListItemIcon>
-        < FontAwesomeIcon icon={faUserShield} />
+        <FontAwesomeIcon icon={faUserShield} />
       </ListItemIcon>
       <ListItemText primary="管理員介面" />
     </ListItemLink>
@@ -52,7 +53,7 @@ const LoginItem = () => {
       {isAdmin && <AdminLink />}
       <ListItem button onClick={handleInfoClassClick}>
         <ListItemIcon>
-          <FontAwesomeIcon icon={faChalkboardTeacher} />
+          <Settings />
         </ListItemIcon>
         <ListItemText primary="相關資訊設定" />
         {InfoClassOpen ? <ExpandLess /> : <ExpandMore />}
@@ -64,6 +65,12 @@ const LoginItem = () => {
               <PersonRounded />
             </ListItemIcon>
             <ListItemText primary="個人資訊" />
+          </ListItemLink>
+          <ListItemLink className={classes.nested} href="#settings/systeminformation">
+            <ListItemIcon>
+              <Code />
+            </ListItemIcon>
+            <ListItemText primary="系統資訊" />
           </ListItemLink>
         </List>
       </Collapse>
@@ -89,7 +96,7 @@ const NavList = () => {
       <List>
         <ListItemLink href="#dashboard">
           <ListItemIcon>
-            <FontAwesomeIcon icon={faChalkboardTeacher} />
+            <Home />
           </ListItemIcon>
           <ListItemText primary="首頁" />
         </ListItemLink>

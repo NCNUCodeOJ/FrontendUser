@@ -1,26 +1,28 @@
 import React from 'react';
 
 const Dashboard = React.lazy(() => import('../views/user/dashboard/Dashboard'));
-const Profile = React.lazy(() => import('../views/user/profile/Profile'))
-const Register = React.lazy(() => import('../views/user/register/Register'))
-const CourseList = React.lazy(() => import('../views/user/course/CourseList'))
-const ExamList = React.lazy(() => import('../views/user/exam/ExamList'))
-const ExamInfo = React.lazy(() => import('../views/user/exam/ExamInfo'))
-const HomeworkInfo = React.lazy(() => import('../views/user/homework/HomeWorkInfo'))
-const HomeWorkList = React.lazy(() => import('../views/user/homework/HomeWorkList'))
-const ForgetPassword = React.lazy(() => import('../views/pages/forgetPassword/ForgetPassword'))
-const ContestList = React.lazy(() => import('../views/user/contest/ContestList'))
-const ContestIntro = React.lazy(() => import('../views/user/contest/ContestIntro'))
-const QuestionList = React.lazy(() => import('../views/user/contest/QuestionList'))
-const QuestionInfo = React.lazy(() => import('../views/user/contest/QuestionInfo'))
-const StatusPage = React.lazy(() => import('../views/user/contest/StatusPage'))
-const RankPage = React.lazy(() => import('../views/user/contest/RankPage'))
-const QAList = React.lazy(() => import('../views/user/contest/QAList'))
+const Profile = React.lazy(() => import('../views/user/profile/Profile'));
+const SystemInformation = React.lazy(() => import('../views/user/profile/SystemInformation'));
+const Register = React.lazy(() => import('../views/user/register/Register'));
+const CourseList = React.lazy(() => import('../views/user/course/CourseList'));
+const ExamList = React.lazy(() => import('../views/user/exam/ExamList'));
+const ExamInfo = React.lazy(() => import('../views/user/exam/ExamInfo'));
+const HomeworkInfo = React.lazy(() => import('../views/user/homework/HomeWorkInfo'));
+const HomeWorkList = React.lazy(() => import('../views/user/homework/HomeWorkList'));
+const ForgetPassword = React.lazy(() => import('../views/pages/forgetPassword/ForgetPassword'));
+const ContestList = React.lazy(() => import('../views/user/contest/ContestList'));
+const ContestIntro = React.lazy(() => import('../views/user/contest/ContestIntro'));
+const QuestionList = React.lazy(() => import('../views/user/contest/QuestionList'));
+const QuestionInfo = React.lazy(() => import('../views/user/contest/QuestionInfo'));
+const StatusPage = React.lazy(() => import('../views/user/contest/StatusPage'));
+const RankPage = React.lazy(() => import('../views/user/contest/RankPage'));
+const QAList = React.lazy(() => import('../views/user/contest/QAList'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: '首頁', component: Dashboard },
   { path: '/settings/profile', exact: true, name: '個人資訊', component: Profile },
+  { path: '/settings/systeminformation', exact: true, name: '系統資訊', component: SystemInformation },
   { path: '/register', exact: true, name: '註冊頁面', component: Register },
   { path: '/course', exact: true, name: '課程清單', component: CourseList },
   { path: '/course/examlist/:id', exact: true, name: '測驗清單', component: ExamList },
