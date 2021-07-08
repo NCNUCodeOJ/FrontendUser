@@ -6,10 +6,10 @@ import {
   Button,
 } from '@material-ui/core/';
 import {
-  ListItem,ListItemIcon, ListItemText,
+  ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
 import {
-  LaptopMac, Note, ArrowBack,
+  ChromeReaderMode, InsertDriveFile, ArrowBack,
 } from '@material-ui/icons/';
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,13 +55,13 @@ const Item = (props) => {
             </ListItemLink>
             <ListItemLink href={`#course/examlist/${x.id}`}>
               <ListItemIcon>
-                <Note />
+                <InsertDriveFile />
               </ListItemIcon>
               <ListItemText primary="測驗" />
             </ListItemLink>
             <ListItemLink href={`#course/homeworklist/${x.id}`}>
               <ListItemIcon>
-                <LaptopMac />
+                <ChromeReaderMode />
               </ListItemIcon>
               <ListItemText primary="作業" />
             </ListItemLink>
@@ -86,7 +86,7 @@ const Item = (props) => {
               <Grid container justify="flex-end">
                 <Grid item md={4} xs={6}>
                   <CourseItemLink fullWidth color="primary" variant="contained"
-                  onClick={goToHomeworkList} href={`#course/homeWorklist/${x.id}`}>
+                    onClick={goToHomeworkList} href={`#course/homeWorklist/${x.id}`}>
                     進入
                   </CourseItemLink>
                 </Grid>
