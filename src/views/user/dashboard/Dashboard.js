@@ -50,8 +50,8 @@ const Item = (props) => {
             </Typography>
           </Grid>
           <Grid item md={4} xs={12}>
-            <Button fullWidth color="primary" variant="contained">
-              {`查看         `}
+            <Button fullWidth color="primary" variant="contained" href={"#announcementcontent"}>
+              {`查看`}
               <FontAwesomeIcon icon={faSearch} />
             </Button>
           </Grid>

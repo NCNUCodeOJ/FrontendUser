@@ -112,7 +112,7 @@ const CourseList = () => {
       },
       {
         "id": 1,
-        "courseName": "Hello World"
+        "courseName": "軟體工程"
       }
     ]);
   }, []);
