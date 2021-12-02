@@ -9,7 +9,8 @@ import {
   ListItem, ListItemIcon, ListItemText,
 } from '@material-ui/core';
 import {
-  ChromeReaderMode, InsertDriveFile, ArrowBack,
+  Code, ArrowBack, Keyboard
+
 } from '@material-ui/icons/';
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,13 +56,13 @@ const Item = (props) => {
             </ListItemLink>
             <ListItemLink href={`#course/examlist/${x.id}`}>
               <ListItemIcon>
-                <InsertDriveFile />
+                <Code />
               </ListItemIcon>
               <ListItemText primary="測驗" />
             </ListItemLink>
             <ListItemLink href={`#course/homeworklist/${x.id}`}>
               <ListItemIcon>
-                <ChromeReaderMode />
+                <Keyboard />
               </ListItemIcon>
               <ListItemText primary="作業" />
             </ListItemLink>

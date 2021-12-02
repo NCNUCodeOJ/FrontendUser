@@ -1,13 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  List, ListItem, Collapse,
-  ListItemIcon, ListItemText,
+  List, ListItem, ListItemIcon,
+  ListItemText,
 } from '@material-ui/core';
 import {
-  ExpandLess, ExpandMore, PersonRounded,
-  LaptopMac, EmojiEvents, Code,
-  Settings, Home
+  PersonRounded, Home, HelpOutline,
+  School
 } from '@material-ui/icons/';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  icon: {
+    minWidth: 30,
+  }
 }));
 
 const ListItemLink = (props) => {
@@ -26,10 +28,11 @@ const ListItemLink = (props) => {
 }
 
 const AdminLink = () => {
+  const classes = useStyles();
   return (
     <ListItemLink href="/admin/">
       <ListItemIcon>
-        <FontAwesomeIcon icon={faUserShield} />
+        <FontAwesomeIcon className={classes.icon} icon={faUserShield} />
       </ListItemIcon>
       <ListItemText primary="管理員介面" />
     </ListItemLink>
@@ -37,12 +40,9 @@ const AdminLink = () => {
 }
 
 const LoginItem = () => {
-  const classes = useStyles();
   const isLogin = useSelector(state => state.isLogin);
   const isAdmin = useSelector(state => state.isAdmin);
   const CustomNavBar = useSelector(state => state.customNavBar);
-  const [InfoClassOpen, setInfoClassOpen] = React.useState(false);
-  const handleInfoClassClick = () => setInfoClassOpen(!InfoClassOpen);
   if (!isLogin) {
     return null;
   }
@@ -51,34 +51,24 @@ const LoginItem = () => {
   return (
     <>
       {isAdmin && <AdminLink />}
-      <ListItem button onClick={handleInfoClassClick}>
-        <ListItemIcon>
-          <Settings />
-        </ListItemIcon>
-        <ListItemText primary="相關資訊設定" />
-        {InfoClassOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={InfoClassOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemLink className={classes.nested} href="#settings/profile">
-            <ListItemIcon>
-              <PersonRounded />
-            </ListItemIcon>
-            <ListItemText primary="個人資訊" />
-          </ListItemLink>
-          <ListItemLink className={classes.nested} href="#settings/systeminformation">
-            <ListItemIcon>
-              <Code />
-            </ListItemIcon>
-            <ListItemText primary="系統資訊" />
-          </ListItemLink>
-        </List>
-      </Collapse>
+
       <ListItemLink href="#course" >
         <ListItemIcon>
-          <LaptopMac />
+          <School />
         </ListItemIcon>
         <ListItemText primary="課程" />
+      </ListItemLink>
+      <ListItemLink href="#settings/profile">
+        <ListItemIcon>
+          <PersonRounded />
+        </ListItemIcon>
+        <ListItemText primary="個人資訊" />
+      </ListItemLink>
+      <ListItemLink href="#settings/systeminformation">
+        <ListItemIcon>
+          <HelpOutline />
+        </ListItemIcon>
+        <ListItemText primary="系統資訊" />
       </ListItemLink>
     </>
   )
