@@ -80,12 +80,6 @@ const LoginItem = () => {
         </ListItemIcon>
         <ListItemText primary="課程" />
       </ListItemLink>
-      <ListItemLink href="#contest/contestlist" >
-        <ListItemIcon>
-          <EmojiEvents />
-        </ListItemIcon>
-        <ListItemText primary="比賽" />
-      </ListItemLink>
     </>
   )
 }

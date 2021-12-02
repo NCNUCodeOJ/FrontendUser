@@ -2,19 +2,26 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Redirect, useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { newHomeWorkSubmition } from '../../../api/user/api';
 import grey from '@material-ui/core/colors/grey';
 import {
   Paper, Typography, TextField,
   Button, Grid, FormControl,
-  InputLabel, Select
+  InputLabel, Select, Table,
+  TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Card,
+  CssBaseline
 } from '@material-ui/core/';
 import {
   Star, StarHalf, StarBorder,
   FileCopyOutlined
 } from '@material-ui/icons/';
 import Editor from "@monaco-editor/react";
+
+function createData(line, column, rule, description) {
+  return { line, column, rule, description };
+}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,9 +32,6 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(1),
       padding: theme.spacing(3),
     },
-  },
-  box: {
-    textalign: 'left',
   },
   filezone: {
     minWidth: 300,
@@ -43,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
   },
 }));
+
+const WhiteTextTypography = withStyles({
+  root: {
+    color: "#FFFFFF"
+  }
+})(Typography);
 
 const countHomeWorkStar = (difficulty) => {
   let stars = [];
@@ -115,10 +125,6 @@ const Info = () => {
       language: "java",
       value: "// System.out.println('Hello World');",
     }, {
-      name: "PHP",
-      language: "php",
-      value: "<!-- echo 'Hello World!';  -->",
-    }, {
       name: "Python",
       language: "python",
       value: "# print('Hello World!')",
@@ -137,6 +143,13 @@ const Info = () => {
       }
     ]);
   }, []);
+
+  const rows = [
+    createData(2, 8, 'indentation', 'indentation is not a multiple of four'),
+    createData(25, 29, 'indentation', 'indentation contains tabs'),
+    createData(65, 11, 'comment', 'Missing function or method docstring (missing-function-docstring)'),
+  ];
+
   const handleLanguageChange = (event) => {
     setLanguageState(event.target.value);
   };
@@ -181,7 +194,7 @@ const Info = () => {
         {allInfo.map((value) => {
           return (
             <>
-              <Typography variant="h6"  >
+              <Typography variant="h6" >
                 難度: {countHomeWorkStar(value.difficulty)}
               </Typography>
               <Typography variant="h6" color="error">
@@ -261,6 +274,50 @@ const Info = () => {
             />
           </Grid>
         </Grid >
+
+        <Grid container spacing={5} justify="center">
+          <CssBaseline />
+          <Grid container item xs={10} md={7} >
+            <TableContainer component={Paper}>
+              <Table sx={10} md={8} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">Line</TableCell>
+                    <TableCell align="center">Column</TableCell>
+                    <TableCell >規則</TableCell>
+                    <TableCell >描述</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <TableRow
+                      key={row.name}
+                    >
+                      <TableCell component="th" scope="row" align="center">
+                        {row.line}
+                      </TableCell>
+                      <TableCell align="center">{row.column}</TableCell>
+                      <TableCell >{row.rule}</TableCell>
+                      <TableCell >{row.description}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+
+          <Grid container item xs={10} md={3} direction="column" justify="center" >
+            <Card style={{ backgroundColor: "#2c387e" }}>
+              <WhiteTextTypography variant="h4">
+                分數:
+              </WhiteTextTypography>
+              <WhiteTextTypography variant="h2" align="center" >
+                8
+              </WhiteTextTypography>
+            </Card>
+          </Grid>
+        </Grid>
+
         <Grid
           container spacing={1} justify="center">
           <Grid item xs={6} md={4}>

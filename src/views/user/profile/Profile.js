@@ -14,6 +14,7 @@ import {
 } from '@material-ui/icons/';
 import { editUserAccount } from '../../../api/user/api';
 import ErrorMsg from '../pkg/ErrorMsg';
+import UserProfile from '../../../assets/icons/profile.jpg';
 
 const useStyles = makeStyles((theme) => ({
   editProfileText: {
@@ -53,25 +54,19 @@ const Profile = () => {
   }
   return (
     <Grid container spacing={5} justify='center'>
-      <Grid item xs={4} sm={5} md={5} className={classes.profileImg}>
-        <Photo />
+      <Grid item xs={4} sm={5} md={5} className={classes.profileImg} direction="column" align="center" justify='center'>
+        <Grid item className={classes.profileImg} justify='center' >
+          <img src={UserProfile} alt='使用者頭像' align="center" />
+        </Grid>
       </Grid>
 
       <Grid item xs={8} sm={7} md={7} >
-        <Grid container alignItems="flex-end" className={classes.profileText}>
-          <Grid item xs={1} sm={2} md={1} >
-            <School />
-          </Grid>
-          <Grid item xs={4} sm={6} md={6} id="SchoolID">
-            學校代碼:
-          </Grid>
-        </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
           <Grid item xs={1} sm={2} md={1} >
             <AssignmentInd />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="StudentID">
-            學號:
+            學號: 107213023
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -79,7 +74,7 @@ const Profile = () => {
             <AccountCircle />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="UserName">
-            暱稱:
+            帳號: Frog
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -87,7 +82,7 @@ const Profile = () => {
             <Translate />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="RealName">
-            真實姓名:
+            真實姓名: Frog Chui
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -95,15 +90,7 @@ const Profile = () => {
             <Mail />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="Email">
-            電子信箱:
-          </Grid>
-        </Grid>
-        <Grid container className={classes.profileText} alignItems="flex-end">
-          <Grid item xs={1} sm={2} md={1}>
-            <Lock />
-          </Grid>
-          <Grid item xs={4} sm={6} md={6} id="Password" type="password">
-            密碼:
+            電子信箱: s107213023@mail1.ncnu.edu.tw
           </Grid>
         </Grid>
 
@@ -202,28 +189,21 @@ const EditProfile = () => {
   }
   return (
     <Grid container spacing={5} justify='center'>
-      <Grid item xs={4} sm={5} md={5} className={classes.profileImg}>
-        <Photo />
+      <Grid container xs={4} sm={5} md={5} direction="column" align="center" justify='center'>
+        <Grid item className={classes.profileImg} justify='center' >
+          <img src={UserProfile} alt='使用者頭像' align="center" />
+        </Grid>
+        <Grid item className={classes.profileImg} justify='center' >
+          <Button
+            variant="outlined"
+            color="info"
+          >
+            上傳頭貼
+          </Button>
+        </Grid>
       </Grid>
-
       <Grid item xs={8} sm={7} md={7} >
         <ErrorMsg msg={errorMsg} />
-        <Grid container className={classes.editProfileText} alignItems="flex-end">
-          <Grid item xs={1} sm={2} md={1} >
-            <School />
-          </Grid>
-          <Grid item xs={4} sm={6} md={6} >
-            <Grid container className={classes.editProfileText} alignItems="flex-end">
-              <TextField
-                fullWidth
-                id="SchoolID"
-                error={errorComponent.includes("SchoolID")}
-                value={SchoolID}
-                onChange={(event) => setSchoolID(event.target.value)}
-                label="學校代碼" />
-            </Grid>
-          </Grid>
-        </Grid>
         <Grid container className={classes.editProfileText} alignItems="flex-end">
           <Grid item xs={1} sm={2} md={1} >
             <AssignmentInd />
@@ -247,9 +227,11 @@ const EditProfile = () => {
               fullWidth
               id="UserName"
               error={errorComponent.includes("UserName")}
-              value={UserName}
+              value='Frog'
               onChange={(event) => setUserName(event.target.value)}
-              label="帳號" />
+              label="帳號"
+              inputProps={
+                { readOnly: true }} />
           </Grid>
         </Grid>
         <Grid container className={classes.editProfileText} alignItems="flex-end">

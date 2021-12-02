@@ -4,10 +4,10 @@ import {
   Grid, CssBaseline,
   Typography, Card,
 } from '@material-ui/core/';
-import PhpLogo from '../../../assets/icons/php.svg';
 import CLogo from '../../../assets/icons/c.svg';
 import PythonLogo from '../../../assets/icons/python.svg';
 import JavaLogo from '../../../assets/icons/java.svg';
+import CPlusLogo from '../../../assets/icons/c++.svg';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -41,8 +41,8 @@ const SystemInformationPage = () => {
     setAllLanguages([
       {
         "id": 0,
-        "languageName": "PHP",
-        "icon": PhpLogo,
+        "languageName": "C++",
+        "icon": CPlusLogo,
       },
       {
         "id": 1,
