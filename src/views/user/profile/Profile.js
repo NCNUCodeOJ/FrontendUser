@@ -8,9 +8,8 @@ import {
   TextField, CssBaseline
 } from '@material-ui/core/';
 import {
-  Photo, AccountCircle, School,
-  AssignmentInd, Lock, Translate,
-  Mail, Edit
+  AccountCircle, AssignmentInd, Lock,
+  Translate, Mail, Edit
 } from '@material-ui/icons/';
 import { editUserAccount } from '../../../api/user/api';
 import ErrorMsg from '../pkg/ErrorMsg';
@@ -93,8 +92,6 @@ const Profile = () => {
             電子信箱: s107213023@mail1.ncnu.edu.tw
           </Grid>
         </Grid>
-
-
       </Grid>
 
     </Grid>
@@ -107,7 +104,6 @@ const EditProfile = () => {
   const history = useHistory();
   const [errorMsg, setErrorMsg] = useState("");
   const [errorComponent, setErrorComponent] = useState([]);
-  const [SchoolID, setSchoolID] = useState("");
   const [StudentID, setStudentID] = useState("");
   const [Email, setEmail] = useState("");
   const [UserName, setUserName] = useState("");
@@ -127,11 +123,6 @@ const EditProfile = () => {
     const errorList = [];
     let errorMsg = "";
     let errorOccurred = false;
-    if (SchoolID === "") {
-      errorMsg += "未填寫學校代號 ";
-      errorList.push("SchoolID");
-      errorOccurred = true;
-    }
     if (StudentID === "") {
       errorMsg += "未填寫學號 ";
       errorList.push("StudentID");
@@ -175,7 +166,7 @@ const EditProfile = () => {
     if (errorOccurred)
       return;
 
-    editUserAccount(SchoolID, StudentID, Email, UserName, RealName, Password)
+    editUserAccount( StudentID, Email, UserName, RealName, Password)
       .then((rs) => {
         const data = rs.data;
         toast.info(data.message, options);
@@ -284,7 +275,6 @@ const EditProfile = () => {
           </Grid>
           <Grid item xs={2} sm={3} md={3}>
             <TextField
-
               id="ConfirmPassword"
               error={errorComponent.includes("ConfirmPassword")}
               value={ConfirmPassword}

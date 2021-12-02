@@ -23,9 +23,8 @@ const newUserAccount = (SchoolID, StudentID, Email, UserName, RealName, Password
     "Password": Password,
   });
 }
-const editUserAccount = (SchoolID, StudentID, Email, UserName, RealName, Password) => {
+const editUserAccount = (StudentID, Email, UserName, RealName, Password) => {
   return axios.post(`${serverURL}/high/info/`, {
-    "SchoolID": SchoolID,
     "StudentID": StudentID,
     "Email": Email,
     "UserName": UserName,

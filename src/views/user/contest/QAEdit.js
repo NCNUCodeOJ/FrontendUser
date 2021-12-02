@@ -1,6 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Dialog, DialogContent, DialogTitle, DialogActions, TextField, Button, Box, Typography } from '@material-ui/core';
+import {
+  Dialog, DialogContent, DialogTitle,
+  DialogActions, TextField, Button,
+  Typography
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -27,14 +31,14 @@ const QAEdit = (props) => {
         </DialogTitle>
         <DialogContent className={classes.content} color="primary">
           <TextField
-              label="Question"
-              placeholder="寫點甚麼..."
-              multiline
-              variant="outlined"
-              className={classes.textField}
-              justifyContent="center"
-              fullWidth
-            />
+            label="Question"
+            placeholder="寫點甚麼..."
+            multiline
+            variant="outlined"
+            className={classes.textField}
+            justifyContent="center"
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button variant="contained" color="primary">
