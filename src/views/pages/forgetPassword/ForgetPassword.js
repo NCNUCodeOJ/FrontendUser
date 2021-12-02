@@ -5,7 +5,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import 'date-fns';
 import { Alert, AlertTitle } from '@material-ui/lab';
-
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -21,11 +21,13 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   }
 }));
-
+const handleVerificationSuccess = (token, ekey) => {
+  console.log(token, ekey);
+}
 const ForgetPassword = () => {
   const classes = useStyles();
   const [mail, setMail] = useState("");
-  const [verification, setVerification] = useState("");
+  const [verification] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [errorComponent, setErrorComponent] = useState([]);
   const ErrorMsg = () => {
@@ -57,6 +59,7 @@ const ForgetPassword = () => {
     if (errorOccurred)
       return;
   }
+
   return (
     <>
       <Paper className={classes.paper}>
@@ -92,18 +95,9 @@ const ForgetPassword = () => {
               container alignItems="flex-end" spacing={1}
             >
               <Grid item xs={10} sm={6} md={4} >
-                <TextField
-                  id="verification"
-                  label="驗證碼"
-                  required
-                  fullWidth
-                  error={errorComponent.includes("verification")}
-                  value={verification}
-                  onChange={(event) => setVerification(event.target.value)}
-                  type="username"
-                  autoComplete="current-username"
-                  variant="outlined"
-                  size="small"
+                <HCaptcha
+                  sitekey="e4d88672-ae53-448a-964b-317d1563b6fd"
+                  onVerify={(token, ekey) => handleVerificationSuccess(token, ekey)}
                 />
               </Grid>
             </Grid>
