@@ -9,7 +9,6 @@ import {
   AppBar, Toolbar, Typography, Button,
   IconButton, Hidden, Dialog, TextField,
 } from '@material-ui/core';
-import { getUserInfo, logout } from '../../api/page/api';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
 
@@ -62,19 +61,6 @@ const Logout = (dispatch, history) => {
     pauseOnHover: true,
     draggable: true,
   };
-  logout()
-    .then(function (rs) {
-      dispatch({ type: 'set', isLogin: false });
-      dispatch({ type: 'set', isAdmin: false });
-      dispatch({ type: 'set', username: '' });
-      const data = rs.data;
-      toast.info(data.message, options);
-      history.push('/');
-    })
-    .catch(function (error) {
-      const data = error.response.data;
-      toast.error(data.message, options);
-    })
 }
 
 const styles = (theme) => ({
@@ -257,24 +243,6 @@ const Header = () => {
   const changeTheme = () => {
     dispatch({ type: 'set', theme: !darkTheme })
   }
-  useEffect(() => {
-    let isSubscribed = true
-    getUserInfo()
-      .then((response) => {
-        const data = response.data;
-        if (isSubscribed) {
-          dispatch({ type: 'set', username: data.user.name });
-          dispatch({ type: 'set', isLogin: !data.user.is_anonymous });
-          if (isLogin) {
-            dispatch({ type: 'set', isAdmin: data.user.admin });
-          }
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-    return () => isSubscribed = false
-  }, [isLogin, dispatch])
   return (
     <>
       <AppBar position="sticky" className={classes.root}>

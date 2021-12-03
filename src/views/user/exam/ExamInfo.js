@@ -12,7 +12,6 @@ import {
 } from '@material-ui/icons/';
 import { makeStyles } from '@material-ui/core/styles';
 import 'date-fns';
-import { newExamSubmition } from '../../../api/user/api';
 import ErrorMsg from '../pkg/ErrorMsg';
 
 const useStyles = makeStyles((theme) => ({
@@ -116,16 +115,6 @@ const Info = () => {
     setErrorComponent(errorList);
     if (errorOccurred)
       return;
-    newExamSubmition(MultipleAnswer, TrueFalseAnswer, ShortAnswer)
-      .then((rs) => {
-        const data = rs.data;
-        toast.info(data.message, options);
-        history.push('/');
-      })
-      .catch((err) => {
-        const data = err.response.data;
-        toast.error(data.message, options);
-      })
   }
 
   return (

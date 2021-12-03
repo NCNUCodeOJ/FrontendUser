@@ -11,7 +11,6 @@ import {
   AccountCircle, AssignmentInd, Lock,
   Translate, Mail, Edit
 } from '@material-ui/icons/';
-import { editUserAccount } from '../../../api/user/api';
 import ErrorMsg from '../pkg/ErrorMsg';
 import UserProfile from '../../../assets/icons/profile.jpg';
 
@@ -165,18 +164,6 @@ const EditProfile = () => {
     setErrorComponent(errorList);
     if (errorOccurred)
       return;
-
-    editUserAccount( StudentID, Email, UserName, RealName, Password)
-      .then((rs) => {
-        const data = rs.data;
-        toast.info(data.message, options);
-        history.push('/');
-
-      })
-      .catch((err) => {
-        const data = err.response.data;
-        toast.error(data.message, options);
-      })
   }
   return (
     <Grid container spacing={5} justify='center'>

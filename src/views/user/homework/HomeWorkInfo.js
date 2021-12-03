@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Redirect, useHistory } from 'react-router-dom';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { newHomeWorkSubmition } from '../../../api/user/api';
 import grey from '@material-ui/core/colors/grey';
 import {
   Paper, Typography, TextField,
@@ -174,16 +173,6 @@ const Info = () => {
     let errorOccurred = false;
     if (errorOccurred)
       return;
-    newHomeWorkSubmition()
-      .then((rs) => {
-        const data = rs.data;
-        toast.info(data.message, options);
-        history.push('/');
-      })
-      .catch((err) => {
-        const data = err.response.data;
-        toast.error(data.message, options);
-      })
   }
   return (
     <>

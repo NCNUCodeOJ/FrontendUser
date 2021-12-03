@@ -16,7 +16,6 @@ import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { getUserInfo } from '../../../api/page/api';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -242,47 +241,6 @@ const SignInSide = () => {
       content: `其他未盡事項，皆依中華民國法律規定及網際網路規範辦理。 `
     },
   ];
-  useEffect(() => {
-    let isSubscribed = true
-    setLoading(true);
-    getUserInfo()
-      .then(function (response) {
-        const data = response.data;
-        if (!isLogin && !data.user.is_anonymous) {
-          toast.info('登入成功', {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-          });
-        }
-        if (isSubscribed) {
-          dispatch({ type: 'set', username: data.user.name });
-          dispatch({ type: 'set', isLogin: !data.user.is_anonymous });
-          if (isLogin) {
-            dispatch({ type: 'set', isAdmin: data.user.admin });
-          }
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-        toast.error('登入失敗', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }).finally(function () {
-        if (isSubscribed) {
-          setLoading(false);
-        }
-      })
-    return () => isSubscribed = false
-  }, [isLogin, dispatch])
   if (isLogin) {
     return (
       <Redirect to="/" />
@@ -361,15 +319,15 @@ const SignInSide = () => {
               <Alert severity="info">
                 <AlertTitle>請注意</AlertTitle>
                 當你登入時，即代表你同意本網站的《
-                  <Button color="primary" onClick={handlePrivacyOpen}>
+                <Button color="primary" onClick={handlePrivacyOpen}>
                   隱私權政策
-                  </Button>
-                  》與《
-                  <Button color="primary" onClick={handleTermOpen}>
+                </Button>
+                》與《
+                <Button color="primary" onClick={handleTermOpen}>
                   服務條款
-                  </Button>》
-                  <br />
-                  你只能使用sXXXXXXXXX@mail1.ncnu.edu.tw的google帳號登入
+                </Button>》
+                <br />
+                你只能使用sXXXXXXXXX@mail1.ncnu.edu.tw的google帳號登入
               </Alert>
               <Grid container className={classes.textArea} alignItems="flex-end">
                 <Grid item xs={1} sm={1} md={1} >

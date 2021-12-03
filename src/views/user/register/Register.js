@@ -7,11 +7,11 @@ import {
   Button, Paper, Grid, Typography, TextField
 } from '@material-ui/core';
 import {
-  School, Mail,
-  AssignmentInd, Lock, Translate
+  Mail, Lock, TextFields,
+  Person, InsertPhoto, FeaturedPlayList,
 } from '@material-ui/icons';
-import { newUserAccount } from '../../../api/user/api';
 import ErrorMsg from '../pkg/ErrorMsg';
+import { register } from '../../../api/user/register/api';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   box: {
     textAlign: 'center',
+  },
+  grid: {
+    padding: 0
   }
 }));
 
@@ -49,7 +52,7 @@ const InputComponent = (props) => {
           type={props.type}
         />
       </Grid>
-    </Grid>
+    </Grid >
   )
 }
 
@@ -58,12 +61,12 @@ const Register = () => {
   const history = useHistory();
   const [errorMsg, setErrorMsg] = useState("");
   const [errorComponent, setErrorComponent] = useState([]);
-  const [SchoolID, setSchoolID] = useState("");
   const [StudentID, setStudentID] = useState("");
   const [Email, setEmail] = useState("");
   const [UserName, setUserName] = useState("");
   const [RealName, setRealName] = useState("");
   const [Password, setPassword] = useState("");
+  const [Avatar, setAvatar] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
   const isLogin = useSelector(state => state.isLogin);
 
@@ -83,13 +86,18 @@ const Register = () => {
     };
     const errorList = [];
     let errorMsg = "";
-    if (SchoolID === "") {
-      errorMsg += "未填寫學校代號 ";
-      errorList.push("SchoolID");
-    }
+
     if (StudentID === "") {
       errorMsg += "未填寫學號 ";
       errorList.push("StudentID");
+    }
+    if (UserName === "") {
+      errorMsg += "未填寫帳號 ";
+      errorList.push("UserName");
+    }
+    if (RealName === "") {
+      errorMsg += "未填寫真實姓名 ";
+      errorList.push("RealName");
     }
     if (Email === "") {
       errorMsg += "未填寫電子信箱 ";
@@ -100,10 +108,6 @@ const Register = () => {
         errorMsg += "電子信箱格式錯誤 ";
         errorList.push("Email");
       }
-    }
-    if (UserName === "") {
-      errorMsg += "未填寫帳號 ";
-      errorList.push("UserName");
     }
     if (Password === "") {
       errorMsg += "未填寫密碼 ";
@@ -121,15 +125,15 @@ const Register = () => {
     setErrorComponent(errorList);
     if (errorMsg !== "")
       return;
-    newUserAccount(SchoolID, StudentID, Email, UserName, RealName, Password)
-      .then((rs) => {
-        const data = rs.data;
-        toast.info(data.message, options);
+    register(StudentID, Email, UserName, RealName, Password, Avatar)
+      .then(() => {
+        // 跳出error視窗
+        toast.info('註冊成功', options);
+        // 切換路徑
         history.push('/');
       })
       .catch((err) => {
-        const data = err.response.data;
-        toast.error(data.message, options);
+        toast.info(err.response.data.message, options);
       })
   }
 
@@ -141,32 +145,22 @@ const Register = () => {
         </Typography>
         <ErrorMsg msg={errorMsg} />
         <div className={classes.box}>
-          <Grid container spacing={5} justify='center'>
-            <Grid item xs={12} md={6}>
-              <InputComponent
-                id="SchoolID"
-                icon={School}
-                value={SchoolID}
-                label="學校代碼"
-                set={setSchoolID}
-                error={errorComponent}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
+          <Grid container justifyContent='center' spacing={5}>
+            <Grid item xs={12} md={4} >
               <InputComponent
                 id="StudentID"
-                icon={AssignmentInd}
                 value={StudentID}
+                icon={FeaturedPlayList}
                 label="學號"
                 set={setStudentID}
                 error={errorComponent}
               />
             </Grid>
             <Grid
-              item xs={12} md={6} >
+              item xs={12} md={4} >
               <InputComponent
                 id="UserName"
-                icon={Mail}
+                icon={Person}
                 value={UserName}
                 label="帳號"
                 set={setUserName}
@@ -174,24 +168,35 @@ const Register = () => {
               />
             </Grid>
             <Grid
-              item xs={12} md={6}>
+              item xs={12} md={4}>
               <InputComponent
                 id="RealName"
-                icon={Translate}
+                icon={TextFields}
                 value={RealName}
-                label="姓名"
+                label="真實姓名"
                 set={setRealName}
                 error={errorComponent}
               />
             </Grid>
             <Grid
-              item xs={12} md={12} >
+              item xs={12} md={6}>
+              <InputComponent
+                id="Avatar"
+                icon={InsertPhoto}
+                value={Avatar}
+                label="頭像網址"
+                set={setAvatar}
+                error={errorComponent}
+              />
+            </Grid>
+            <Grid
+              item xs={12} md={6} >
               <InputComponent
                 id="Email"
                 icon={Mail}
                 value={Email}
                 label="電子信箱"
-                onChange={setEmail}
+                set={setEmail}
                 error={errorComponent}
               />
             </Grid>
@@ -210,17 +215,17 @@ const Register = () => {
             <Grid
               item xs={12} md={6} >
               <InputComponent
-                  id="ConfirmPassword"
-                  icon={Lock}
-                  value={ConfirmPassword}
-                  label="確認"
-                  set={setConfirmPassword}
-                  error={errorComponent}
-                  type="password"
-                />
-              </Grid>
+                id="ConfirmPassword"
+                icon={Lock}
+                value={ConfirmPassword}
+                label="確認"
+                set={setConfirmPassword}
+                error={errorComponent}
+                type="password"
+              />
+            </Grid>
             <Grid
-              item xs={12} md={4} justify='center'
+              item xs={12} md={4} justifyContent='center'
               container alignItems="flex-end" spacing={1}
             >
               <Button
