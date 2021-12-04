@@ -1,0 +1,30 @@
+image: node:14
+
+cache:
+  paths:
+    - node_modules/
+
+variables:
+  NODE_ENV: test
+  PORT: 3000
+
+stages:
+  - test
+
+test:
+  stage: test
+  before_script:
+    - npm install
+  script:
+    - npm run start &
+    - sleep 120
+
+# deployJob:
+#   only:
+#     - tags
+#   stage: deploy
+#   artifacts:
+#     paths:
+#       - build
+#   script:
+#       - npm run-script build
