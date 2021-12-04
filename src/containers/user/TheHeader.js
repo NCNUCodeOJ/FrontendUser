@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from "react-router-dom";
-import { toast } from 'react-toastify';
 import clsx from 'clsx';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import {
   AppBar, Toolbar, Typography, Button,
-  IconButton, Hidden, Dialog, TextField,
+  IconButton, Hidden,
 } from '@material-ui/core';
 import Brightness3Icon from '@material-ui/icons/Brightness3';
 import Brightness5Icon from '@material-ui/icons/Brightness5';
-
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-
-import CloseIcon from '@material-ui/icons/Close';
-
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { toast } from 'react-toastify';
+import Login from "../../views/pages/login/Login";
+import { getUserInfo, refreshToken } from 'src/api/page/login/api'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,8 +35,6 @@ const useStyles = makeStyles((theme) => ({
     color: "white"
   },
   submit: {
-    // margin: theme.spacing(3, 0, 2),
-    // padding: theme.spacing(1, 5, 1),
     justify: 'center'
   },
   textArea: {
@@ -52,87 +42,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Logout = (dispatch, history) => {
-  const options = {
-    position: "top-center",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-  };
-}
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
 
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.droot} {...other}>
-      <Typography variant="h6">{children}</Typography>
-    </MuiDialogTitle>
-  );
-});
-
-const DialogContent = withStyles((theme) => ({
-  root: {
-    padding: theme.spacing(2),
-  },
-}))(MuiDialogContent);
-
-const DialogActions = withStyles((theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
-
-const ButtonList = () => {
-  const isLogin = useSelector(state => state.isLogin);
-  const username = useSelector(state => state.username);
-  const history = useHistory();
-  const dispatch = useDispatch();
-  // 登入的彈跳視窗
-  const [privacyOpen, setPrivacyOpen] = useState(false);
-  const handlePrivacyOpen = () => setPrivacyOpen(true);
-  const handlePrivacyClose = () => setPrivacyOpen(false);
-  const classes = useStyles();
-  const handleLogout = () => {
-    Logout(dispatch, history);
-  }
-  // 控制密碼是否要顯示
-  const [values, setValues] = React.useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
+  useEffect(() => {
+    savedCallback.current = callback;
   });
 
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword });
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
+const ButtonList = (props) => {
+  const isLogin = useSelector(state => state.isLogin);
+  // const isAdmin = useSelector(state => state.isAdmin);
+  const username = useSelector(state => state.username);
+  // const history = useHistory();
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    dispatch({ type: 'set', isLogin: false });
+    dispatch({ type: 'set', isAdmin: false });
+  }
+  const handleLoginOpen = () => props.setLoginOpen(true);
   if (isLogin) {
     return (
       <>
@@ -150,91 +89,40 @@ const ButtonList = () => {
   } else {
     return (
       <>
-        <Button type="submit" color="inherit" onClick={handlePrivacyOpen}>登入</Button>
+        <Button color="inherit" onClick={handleLoginOpen}>登入</Button>
         <Button color="inherit" href="#register"> 註冊 </Button>
-        <Dialog onClose={handlePrivacyClose} aria-labelledby="privacy-title" open={privacyOpen}>
-          <DialogTitle id="privacy-title" onClose={handlePrivacyClose} c2lassName={classes.title}>
-            Welcome to NCNU_IM
-            <IconButton
-              aria-label="close"
-              onClick={handlePrivacyClose}
-              edge="end"
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography gutterBottom>
-              <form className={classes.root} noValidate autoComplete="off">
-                {/* username */}
-                <div>
-                  <TextField
-                    id="outlined-username-input"
-                    label="Username"
-                    type="username"
-                    autoComplete="current-username"
-                    variant="outlined"
-                    size="small"
-                  />
-                </div>
-                {/* password */}
-                <div>
-                  <TextField
-                    id="outlined-password-input"
-                    label="Password"
-                    autoComplete="current-password"
-                    variant="outlined"
-                    size="small"
-                    type={values.showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    onChange={handleChange('password')}
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      ),
-                    }}
-                  />
-                </div>
-              </form>
-            </Typography>
-          </DialogContent>
-          <DialogActions align="center">
-            <Button
-              type="submit"
-              variant="contained"
-              // onClick={handlePrivacyClose}
-              color="primary"
-              className={classes.submit}
-              fullWidth
-            >
-              登入
-            </Button>
-          </DialogActions>
-          <Button
-            // variant="contained"
-            href="#login/forgetpassword"
-            onClick={handlePrivacyClose}
-            endAdornment
-          >
-            忘記密碼 ?
-          </Button>
-        </Dialog>
+        <Login LoginOpen={props.LoginOpen} setLoginOpen={props.setLoginOpen} />
       </>
     )
+  }
+}
+
+const refresh_token_in_time = () => {
+  const options = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+  }
+  if (localStorage.getItem('token') != null) {
+    refreshToken(localStorage.getItem('token'))
+      .then((rs) => {
+        localStorage.setItem('token', rs.data.token);
+        console.log("refreshToken ", localStorage.getItem('token'));
+      })
+      .catch((error) => {
+        toast.info(error.response, options);
+      })
   }
 }
 
 const Header = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isLogin = useSelector(state => state.isLogin);
+  useInterval(refresh_token_in_time, 2*60*60*1000);
+  const [LoginOpen, setLoginOpen] = useState(false);
   const defaultShowOn = useSelector(state => state.sidebarShow);
   const darkTheme = useSelector(state => state.theme);
   const toggleSidebar = () => {
@@ -243,6 +131,44 @@ const Header = () => {
   const changeTheme = () => {
     dispatch({ type: 'set', theme: !darkTheme })
   }
+  useEffect(() => {
+    let isSubscribed = true
+    const options = {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+    }
+    // 檢查是否有 token
+    if (localStorage.getItem('token') != null) {
+      // 查看 userData 裡有無東西
+      const userToken = localStorage.getItem('token')
+      getUserInfo(userToken)
+        // 拿的到資料代表 token 尚未過期，進行 token refresh
+        .then((rs) => {
+          console.log("Current userID", rs.data.user_id);
+          console.log("Current userName", rs.data.username);
+          dispatch({ type: 'set', isLogin: true });
+          refresh_token_in_time(userToken);
+        })
+        .catch((error) => {
+          toast.info(error.response, options);
+          console.log(error.response);
+          // 登出
+          localStorage.removeItem('token');
+          dispatch({ type: 'set', isLogin: false });
+          dispatch({ type: 'set', isAdmin: false });
+        });
+    } else {
+      // 登出
+      localStorage.removeItem('token');
+      dispatch({ type: 'set', isLogin: false });
+      dispatch({ type: 'set', isAdmin: false });
+    }
+    return () => isSubscribed = false
+  }, [])
   return (
     <>
       <AppBar position="sticky" className={classes.root}>
@@ -273,9 +199,9 @@ const Header = () => {
           <Hidden smUp>
             <Typography variant="h6" className={classes.title}>
               NCNU
-          </Typography>
+            </Typography>
           </Hidden>
-          <ButtonList />
+          <ButtonList setLoginOpen={setLoginOpen} LoginOpen={LoginOpen} />
           <IconButton aria-label="change theme" onClick={changeTheme} color="inherit">
             {darkTheme ? <Brightness3Icon /> : <Brightness5Icon />}
           </IconButton>
