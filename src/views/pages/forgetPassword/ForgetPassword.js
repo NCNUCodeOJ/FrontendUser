@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 const handleVerificationSuccess = (token, ekey) => {
-  console.log(token, ekey);
+  console.log(token);
 }
 const ForgetPassword = () => {
   const classes = useStyles();
