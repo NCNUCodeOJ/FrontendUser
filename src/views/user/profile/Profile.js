@@ -12,7 +12,7 @@ import {
   Translate, Mail, Edit
 } from '@material-ui/icons/';
 import ErrorMsg from '../pkg/ErrorMsg';
-import UserProfile from '../../../assets/icons/profile.jpg';
+import { getUserInfo, updateUserInfo } from '../../../api/user/profile/api';
 
 const useStyles = makeStyles((theme) => ({
   editProfileText: {
@@ -25,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
   },
   profileImg: {
     textAlign: "center",
+    width: '20vw',
+    height: '100%',
   },
   paper: {
     width: '100%',
@@ -41,10 +43,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Profile = () => {
+const Profile = (props) => {
   const classes = useStyles();
   const isLogin = useSelector(state => state.isLogin);
-
+  const userProfile = props.userProfile;
   if (!isLogin) {
     return (
       <Redirect to="/" />
@@ -52,19 +54,19 @@ const Profile = () => {
   }
   return (
     <Grid container spacing={5} justify='center'>
-      <Grid item xs={4} sm={5} md={5} className={classes.profileImg} direction="column" align="center" justify='center'>
-        <Grid item className={classes.profileImg} justify='center' >
-          <img src={UserProfile} alt='使用者頭像' align="center" />
+      <Grid item xs={12} sm={12} md={5} direction="column" align="center" justify='center'>
+        <Grid item justify='center' >
+          <img className={classes.profileImg} src={userProfile.avatar} alt='使用者頭像' align="center" />
         </Grid>
       </Grid>
 
-      <Grid item xs={8} sm={7} md={7} >
+      <Grid item xs={12} sm={12} md={7}>
         <Grid container className={classes.profileText} alignItems="flex-end">
           <Grid item xs={1} sm={2} md={1} >
             <AssignmentInd />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="StudentID">
-            學號: 107213023
+            學號: {userProfile.student_id}
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -72,7 +74,7 @@ const Profile = () => {
             <AccountCircle />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="UserName">
-            帳號: Frog
+            帳號: {userProfile.username}
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -80,7 +82,7 @@ const Profile = () => {
             <Translate />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="RealName">
-            真實姓名: Frog Chui
+            真實姓名: {userProfile.realname}
           </Grid>
         </Grid>
         <Grid container className={classes.profileText} alignItems="flex-end">
@@ -88,7 +90,7 @@ const Profile = () => {
             <Mail />
           </Grid>
           <Grid item xs={4} sm={6} md={6} id="Email">
-            電子信箱: s107213023@mail1.ncnu.edu.tw
+            電子信箱: {userProfile.email}
           </Grid>
         </Grid>
       </Grid>
@@ -98,15 +100,16 @@ const Profile = () => {
 }
 
 
-const EditProfile = () => {
+const EditProfile = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  const userProfile = props.userProfile;
   const [errorMsg, setErrorMsg] = useState("");
   const [errorComponent, setErrorComponent] = useState([]);
-  const [StudentID, setStudentID] = useState("");
-  const [Email, setEmail] = useState("");
-  const [UserName, setUserName] = useState("");
-  const [RealName, setRealName] = useState("");
+  const [Avatar, setAvatar] = useState(userProfile.avatar);
+  const [StudentID, setStudentID] = useState(userProfile.student_id);
+  const [Email, setEmail] = useState(userProfile.email);
+  const [RealName, setRealName] = useState(userProfile.realname);
   const [Password, setPassword] = useState("");
   const [ConfirmPassword, setConfirmPassword] = useState("");
 
@@ -133,54 +136,57 @@ const EditProfile = () => {
       errorOccurred = true;
     }
     if (Email !== "") {
-      if (!Email.includes("@") || !Email.includes(".com")) {
+      if (!Email.includes("@")) {
         errorMsg += "電子信箱格式錯誤 ";
         errorList.push("Email");
         errorOccurred = true;
       }
     }
-
-    if (UserName === "") {
-      errorMsg += "未填寫帳號 ";
-      errorList.push("UserName");
-      errorOccurred = true;
-    }
-    if (Password === "") {
-      errorMsg += "未填寫密碼 ";
-      errorList.push("Password");
-      errorOccurred = true;
-    }
-    if (ConfirmPassword === "") {
+    if (Password !== "" && ConfirmPassword === "") {
       errorMsg += "未填寫確認密碼 ";
       errorList.push("ConfirmPassword");
       errorOccurred = true;
-    }
-    if (Password !== ConfirmPassword) {
-      errorMsg += "密碼錯誤 ";
-      errorOccurred = true;
+      if (Password !== ConfirmPassword) {
+        errorMsg += "密碼錯誤 ";
+        errorOccurred = true;
+      }
     }
 
     setErrorMsg(errorMsg);
     setErrorComponent(errorList);
-    if (errorOccurred)
+    if (errorMsg !== "")
       return;
+    if (localStorage.getItem('token') != null) {
+      const token = localStorage.getItem('token');
+      updateUserInfo(token, StudentID, Email, RealName, Password, Avatar)
+        .then(() => {
+          // 跳出error視窗
+          toast.info('修改成功', options);
+          // 切換路徑
+          history.push('/settings/profile');
+          props.handleProfileEditClick()
+        })
+        .catch((err) => {
+          toast.info(err.response.data.message, options);
+        })
+    }
   }
   return (
     <Grid container spacing={5} justify='center'>
-      <Grid container xs={4} sm={5} md={5} direction="column" align="center" justify='center'>
-        <Grid item className={classes.profileImg} justify='center' >
-          <img src={UserProfile} alt='使用者頭像' align="center" />
+      <Grid container xs={12} sm={12} md={5} direction="column" align="center" justify='center' spacing={2}>
+        <Grid item justify='center' >
+          <img className={classes.profileImg} src={userProfile.avatar} alt='上傳頭像連結' align="center" />
         </Grid>
-        <Grid item className={classes.profileImg} justify='center' >
-          <Button
-            variant="outlined"
-            color="info"
-          >
-            上傳頭貼
-          </Button>
+        <Grid item justify='center' >
+          <TextField
+            fullWidth
+            id="Avatar"
+            defaultValue={userProfile.avatar}
+            onChange={(event) => setAvatar(event.target.value)}
+            label="頭貼連結" />
         </Grid>
       </Grid>
-      <Grid item xs={8} sm={7} md={7} >
+      <Grid item xs={12} sm={12} md={7}>
         <ErrorMsg msg={errorMsg} />
         <Grid container className={classes.editProfileText} alignItems="flex-end">
           <Grid item xs={1} sm={2} md={1} >
@@ -191,7 +197,7 @@ const EditProfile = () => {
               fullWidth
               id="StudentID"
               error={errorComponent.includes("StudentID")}
-              value={StudentID}
+              defaultValue={userProfile.student_id}
               onChange={(event) => setStudentID(event.target.value)}
               label="學號" />
           </Grid>
@@ -204,9 +210,7 @@ const EditProfile = () => {
             <TextField
               fullWidth
               id="UserName"
-              error={errorComponent.includes("UserName")}
-              value='Frog'
-              onChange={(event) => setUserName(event.target.value)}
+              defaultValue={userProfile.username}
               label="帳號"
               inputProps={
                 { readOnly: true }} />
@@ -221,7 +225,7 @@ const EditProfile = () => {
               fullWidth
               id="RealName"
               error={errorComponent.includes("RealName")}
-              value={RealName}
+              defaultValue={userProfile.realname}
               onChange={(event) => setRealName(event.target.value)}
               label="姓名" />
           </Grid>
@@ -235,7 +239,7 @@ const EditProfile = () => {
               fullWidth
               id="Email"
               error={errorComponent.includes("Email")}
-              value={Email}
+              defaultValue={userProfile.email}
               onChange={(event) => setEmail(event.target.value)}
               label="電子信箱" />
           </Grid>
@@ -250,7 +254,6 @@ const EditProfile = () => {
 
               id="Password"
               error={errorComponent.includes("Password")}
-              value={Password}
               onChange={(event) => setPassword(event.target.value)}
               label="密碼"
               type="password" />
@@ -264,7 +267,6 @@ const EditProfile = () => {
             <TextField
               id="ConfirmPassword"
               error={errorComponent.includes("ConfirmPassword")}
-              value={ConfirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               label="確認"
               type="password" />
@@ -294,12 +296,31 @@ const ProfilePage = () => {
   const handleProfileEditClick = () => {
     setProfileEdit(!ProfileEdit);
   };
+  const [userProfile, setUserProfile] = useState("");
+  const options = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+  };
+  if (localStorage.getItem('token') != null) {
+    const token = localStorage.getItem('token');
+    getUserInfo(token)
+      .then((response) => {
+        setUserProfile(response.data);
+      })
+      .catch((err) => {
+        toast.info(err.response.data.message, options);
+      })
+  }
   if (ProfileEdit) {
     return (
       <>
         <Paper className={classes.paper}>
           <CssBaseline />
-          {ProfileEdit ? <EditProfile /> : <Profile />}
+          {ProfileEdit ? <EditProfile userProfile={userProfile} handleProfileEditClick={handleProfileEditClick} /> : <Profile userProfile={userProfile} />}
         </Paper>
       </>
     )
@@ -313,7 +334,7 @@ const ProfilePage = () => {
               {ProfileEdit ? null : <Edit />}
             </Button>
           </Grid>
-          {ProfileEdit ? <EditProfile /> : <Profile />}
+          {ProfileEdit ? <EditProfile userProfile={userProfile} /> : <Profile userProfile={userProfile} />}
         </Paper>
       </>
     )
