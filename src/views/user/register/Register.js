@@ -133,7 +133,7 @@ const Register = () => {
         history.push('/');
       })
       .catch((err) => {
-        toast.info(err.response.data.message, options);
+        toast.error(err.response.data.message, options);
       })
   }
 

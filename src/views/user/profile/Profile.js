@@ -173,7 +173,7 @@ const EditProfile = (props) => {
           props.handleProfileEditClick()
         })
         .catch((err) => {
-          toast.info(err.response.data.message, options);
+          toast.error(err.response.data.message, options);
         })
     }
   }
