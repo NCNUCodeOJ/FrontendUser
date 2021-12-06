@@ -124,36 +124,42 @@ const EditProfile = (props) => {
     };
     const errorList = [];
     let errorMsg = "";
-    let errorOccurred = false;
     if (StudentID === "") {
       errorMsg += "未填寫學號 ";
       errorList.push("StudentID");
-      errorOccurred = true;
     }
     if (Email === "") {
       errorMsg += "未填寫電子信箱 ";
       errorList.push("Email");
-      errorOccurred = true;
     }
     if (Email !== "") {
       if (!Email.includes("@")) {
         errorMsg += "電子信箱格式錯誤 ";
         errorList.push("Email");
-        errorOccurred = true;
       }
     }
-    if (Password !== "" && ConfirmPassword === "") {
+    if (RealName === "") {
+      errorMsg += "未填寫真實姓名 ";
+      errorList.push("RealName");
+    }
+    if (Password === "") {
+      errorMsg += "未填寫密碼 ";
+      errorList.push("Password");
+    }
+    if (ConfirmPassword === "") {
       errorMsg += "未填寫確認密碼 ";
       errorList.push("ConfirmPassword");
-      errorOccurred = true;
-      if (Password !== ConfirmPassword) {
-        errorMsg += "密碼錯誤 ";
-        errorOccurred = true;
-      }
     }
+    if (Password !== ConfirmPassword) {
+      errorMsg += "密碼錯誤 ";
+    }
+    console.log(Password);
+    console.log(ConfirmPassword);
+
 
     setErrorMsg(errorMsg);
     setErrorComponent(errorList);
+
     if (errorMsg !== "")
       return;
     if (localStorage.getItem('token') != null) {
@@ -251,7 +257,6 @@ const EditProfile = (props) => {
           </Grid>
           <Grid item xs={2} sm={3} md={3}>
             <TextField
-
               id="Password"
               error={errorComponent.includes("Password")}
               onChange={(event) => setPassword(event.target.value)}

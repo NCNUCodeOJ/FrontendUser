@@ -206,7 +206,7 @@ const Register = () => {
                 id="Password"
                 icon={Lock}
                 value={Password}
-                label="密碼"
+                label="密碼(長度需至少為6)"
                 set={setPassword}
                 error={errorComponent}
                 type="password"
