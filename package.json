@@ -42,6 +42,7 @@
     "customize-cra": "^1.0.0",
     "date-fns": "^2.26.0",
     "enzyme": "^3.11.0",
+    "json-bigint": "^1.0.0",
     "monaco-editor": "^0.23.0",
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
