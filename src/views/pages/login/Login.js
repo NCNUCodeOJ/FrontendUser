@@ -105,8 +105,8 @@ const Login = (props) => {
         dispatch({ type: 'set', isLogin: true })
       })
       .catch((error) => {
-        toast.info(error.response, options)
-        console.log(error.response)
+        toast.error(error.response.data.message, options)
+        console.log(error.response.data.message)
       })
     handleLoginClose();
   };

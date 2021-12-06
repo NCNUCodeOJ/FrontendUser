@@ -1,23 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography, Paper, Grid
 } from '@material-ui/core/';
+import { getAnnouncementList } from 'src/api/user/announcement/api';
 
-const AnnouncementContent = () => {
+const Item = (props) => {
+  const x = props.item;
   return (
     <>
-      <Typography align="center" variant="h4">
-        忘記密碼
-      </Typography>
-      <br/>
-      <Paper>
-        <Grid align="center">
-          <h3>忘記密碼的話，可以填入信箱並輸入驗證碼取得重設密碼權限喔!</h3>
-        </Grid>
-      </Paper>
+      {(() => {
+        if (props.currentID == x.announcement_id) {
+          console.log(x.announcement_id);
+          return (
+            <>
+              <Typography key={x.announcement_id} align="center" variant="h4">{x.title}</Typography>
+              <Paper>
+                <Grid align="center">
+                  <h3>{x.content}</h3>
+                </Grid>
+              </Paper>
+            </>
+          );
+        }
+      })()}
+    </>
+  );
+}
+
+const AnnouncementContent = ({ match }) => {
+  const currentID = match.params.id;
+  console.log(currentID);
+  const [announcement, getAllAnnouncement] = useState([]);
+  const showAnnouncementList = () => {
+    getAnnouncementList()
+      .then((rs) => {
+        const allAnnouncement = rs.data.announcements;
+        getAllAnnouncement(allAnnouncement);
+      })
+      .catch((error) => {
+        console.log(error.response);
+      })
+  };
+  useEffect(() => {
+    showAnnouncementList();
+  }, []);
+  return (
+    <>
+      <div announcement={announcement}>
+        {
+          announcement.map((x) => (
+            <Item key={x.announcement_id} item={x} currentID={currentID} />
+          ))
+        }
+      </div>
+      <br />
     </>
   );
 }
 
 export default AnnouncementContent
-
