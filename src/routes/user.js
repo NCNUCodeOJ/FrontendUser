@@ -24,7 +24,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: '首頁', component: Dashboard },
   { path: '/login', exact: true, name: '登入', component: Login },
-  { path: '/announcementcontent', exact: true, name: '公告', component: AnnouncementContent },
+  { path: '/announcement/:id', exact: true, name: '公告', component: AnnouncementContent },
   { path: '/settings/profile', exact: true, name: '個人資訊', component: Profile },
   { path: '/settings/systeminformation', exact: true, name: '系統資訊', component: SystemInformation },
   { path: '/register', exact: true, name: '註冊頁面', component: Register },
