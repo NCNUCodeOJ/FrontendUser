@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import JSONbig from 'json-bigint';
 import {
   Grid, Typography, Card, CardActions, CardContent,
   Button,
@@ -10,8 +12,9 @@ import {
 } from '@material-ui/core';
 import {
   Code, ArrowBack, Keyboard
-
 } from '@material-ui/icons/';
+import { getCourseList, getCourseInfo } from 'src/api/user/course/api';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -39,6 +42,7 @@ const ListItemLink = (props) => {
 
 const Item = (props) => {
   const x = props.item;
+  const history = useHistory()
   const dispatch = useDispatch();
   const backToCourseList = () => {
     dispatch({ type: 'set', customNavBar: null });
@@ -80,14 +84,14 @@ const Item = (props) => {
           <CardContent>
             <Grid item md={8} xs={6}>
               <Typography variant="h5" component="h2">
-                {x.courseName}
+                {x.class_name}
               </Typography>
             </Grid>
             <CardActions>
               <Grid container justify="flex-end">
                 <Grid item md={4} xs={6}>
                   <CourseItemLink fullWidth color="primary" variant="contained"
-                    onClick={goToHomeworkList} href={`#course/homeWorklist/${x.id}`}>
+                    onClick={() => { goToHomeworkList(); history.push(`/course/homeWorklist/${x.class_id}`); }}>
                     進入
                   </CourseItemLink>
                 </Grid>
@@ -103,19 +107,41 @@ const Item = (props) => {
 
 const CourseList = () => {
   const classes = useStyles();
-  const [allCourse, setAllCourse] = useState([])
+  const [allCourse, setAllCourse] = useState([]);
+
+  const showCourseList = () => {
+    const token = localStorage.getItem('token');
+    getCourseList(token)
+      .then((rs) => {
+        var data = JSONbig.parse(rs.data);
+        // console.log(data.classes[0].toString())
+        const tempClassID = data.classes;
+        const classData = [];
+        getClassIndiData(token, tempClassID, classData);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
   useEffect(() => {
-    setAllCourse([
-      {
-        "id": 0,
-        "courseName": "程式設計"
-      },
-      {
-        "id": 1,
-        "courseName": "軟體工程"
-      }
-    ]);
+    showCourseList();
   }, []);
+
+  function getClassIndiData(token, tempClassID, classData) {
+    let temp = null;
+    temp = tempClassID.pop();
+    getCourseInfo(token, temp.toString())
+      .then((rs) => {
+        rs.data.class_id = temp.toString();
+        classData.push(rs.data);
+        if (tempClassID.length > 0) {
+          getClassIndiData(token, tempClassID, classData);
+        } else {
+          setAllCourse(classData);
+        }
+      })
+  }
+
   return (
     <>
       <Typography align="center" variant="h4">
@@ -124,7 +150,7 @@ const CourseList = () => {
       <Grid container justify="center" spacing={1} className={classes.root}>
         {
           allCourse.map((x) => (
-            <Item key={x.id} item={x} className={classes.heading} />
+            <Item key={x.class_id} item={x} className={classes.heading} />
           ))
         }
       </Grid>
