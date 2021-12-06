@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import JSONbig from 'json-bigint';
 import {
   Grid, Typography,
   Accordion, AccordionSummary, AccordionDetails, Button
@@ -9,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookOpen, faClock
 } from '@fortawesome/free-solid-svg-icons';
+import { getProblemList, getProblemInfo } from 'src/api/user/problem/api';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,94 +26,132 @@ const useStyles = makeStyles((theme) => ({
 
 const Item = (props) => {
   const x = props.item;
+  let remainingTime = null;
+  let remainingTimeUnit = null;
+  const history = useHistory()
+
+  const startTime = x.start_time;
+  var sdate = new Date(startTime * 1000);
+  var smonths = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+  var syear = sdate.getFullYear();
+  var smonth = smonths[sdate.getMonth()];
+  var sday = sdate.getDate();
+
+  let tempStartTime = syear + '-' + smonth + '-' + sday;
+  var stime = new Date(startTime * 1000);
+  var shour = stime.getHours();
+  var smin = stime.getMinutes();
+  var ssec = stime.getSeconds();
+  tempStartTime += ' ' + shour + ':' + smin + ':' + ssec;
+
+  const endTime = x.end_time;
+  var date = new Date(endTime * 1000);
+  var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+  var year = date.getFullYear();
+  var month = months[date.getMonth()];
+  var day = date.getDate();
+
+  let tempEndTime = year + '-' + month + '-' + day;
+  var time = new Date(endTime * 1000);
+  var hour = time.getHours();
+  var min = time.getMinutes();
+  var sec = time.getSeconds();
+  tempEndTime += ' ' + hour + ':' + min + ':' + sec;
+
+  if (day - sday >= 1) {
+    remainingTime = day - sday;
+    remainingTimeUnit = '天';
+  } else if (hour - shour >= 1) {
+    remainingTime = hour - shour;
+    remainingTimeUnit = '時';
+  } else if (min - smin >= 1) {
+    remainingTime = min - smin;
+    remainingTimeUnit = '分';
+  }
   return (
     <>
-
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        id={x.id}
-      >
-        <Typography className={props.className}>
-          <FontAwesomeIcon icon={faBookOpen} />
-          {` ${x.homeWorkName} ----- 剩餘時間 : ${x.remainingTime}`}
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Grid container spacing={5}>
-          <Grid item md={4} xs={12}>
-            <Typography align="center">
-              <FontAwesomeIcon icon={faClock} />
-              {"開始時間：" + x.startTime}
-            </Typography>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          id={x.problem_id}
+        >
+          <Typography className={props.className}>
+            <FontAwesomeIcon icon={faBookOpen} />
+            {` ${x.problem_name} ----- 剩餘時間 : ${remainingTime + remainingTimeUnit}`}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={5}>
+            <Grid item md={4} xs={12}>
+              <Typography align="center">
+                <FontAwesomeIcon icon={faClock} />
+                {"開始時間：" + tempStartTime}
+              </Typography>
+            </Grid>
+            <Grid item md={4} xs={12}>
+              <Typography align="center">
+                <FontAwesomeIcon icon={faClock} />
+                {"到期時間：" + tempEndTime}
+              </Typography>
+            </Grid>
+            <Grid item md={4} xs={12}>
+              <Button fullWidth color="primary"
+                variant="contained"
+                onClick={() => history.push(`/course/homeworkinfo/${x.problem_id}`)}>
+                進入
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item md={4} xs={12}>
-            <Typography align="center">
-              <FontAwesomeIcon icon={faClock} />
-              {"到期時間：" + x.endTime}
-            </Typography>
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <Button fullWidth color="primary"
-              variant="contained" href={`#course/homeworkinfo/${x.id}`}>
-              進入
-            </Button>
-          </Grid>
-        </Grid>
-      </AccordionDetails>
-    </Accordion>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 }
 
 
-const HomeWorkList = () => {
+const HomeWorkList = ({ match }) => {
+  const classID = match.params.id.toString();
+  // console.log('ClassID ' + classID);
+
   const classes = useStyles();
-  const [allClass, setAllClass] = useState([])
+  const [allHomeWork, setAllHomeWork] = useState([]);
+
+  const showHomeWorkList = () => {
+    const token = localStorage.getItem('token');
+    getProblemList(token, classID)
+      .then((rs) => {
+        var data = JSONbig.parse(rs.data);
+        // console.log('ProblemID ' + data.problems[1].toString())
+        const tempHWID = data.problems;
+        const homeWorkData = [];
+        getHomeworkIndiData(token, tempHWID, classID, homeWorkData);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
   useEffect(() => {
-    setAllClass([
-      {
-        "id": 15,
-        "homeWorkName": "Hello World",
-        "department": "dev",
-        "remainingTime": "21小時",
-        "startTime": "2021-02-28 00:00",
-        "endTime": "2021-03-03 23:59",
-      },
-      {
-        "id": 12,
-        "homeWorkName": "走馬炮",
-        "department": "dev",
-        "remainingTime": "2天",
-        "startTime": "2021-02-29 00:00",
-        "endTime": "2021-03-05 00:00",
-      },
-      {
-        "id": 13,
-        "homeWorkName": "判斷閏年",
-        "department": "dev",
-        "remainingTime": "7天",
-        "startTime": "2021-02-29 09:44",
-        "endTime": "2021-02-29 23:44:00",
-      },
-      {
-        "id": 10,
-        "homeWorkName": "八皇后",
-        "department": "dev",
-        "remainingTime": "13天",
-        "startTime": "2021-02-29 16:29:00",
-        "endTime": "2021-02-29 23:29:00",
-      },
-      {
-        "id": 11,
-        "homeWorkName": "馬拉松",
-        "department": "dev",
-        "remainingTime": "28天",
-        "startTime": "2021-02-29 11:30:00",
-        "endTime": "2021-02-29 23:30:00",
-      }
-    ]);
+    showHomeWorkList();
   }, []);
+
+  function getHomeworkIndiData(token, tempHWID, classID, homeWorkData) {
+    let temp = null;
+    temp = tempHWID.pop();
+    // console.log('ProblemID-- ' + temp.toString());
+    getProblemInfo(token, classID, temp.toString())
+      .then((rs) => {
+        rs.data.problem_id = temp.toString();
+        rs.data.class_id = classID;
+        homeWorkData.push(rs.data);
+
+        if (tempHWID.length > 0) {
+          getHomeworkIndiData(token, tempHWID, classID, homeWorkData);
+        } else {
+          setAllHomeWork(homeWorkData);
+        }
+      })
+  }
   return (
     <>
       <Typography align="center" variant="h4">
@@ -118,8 +159,8 @@ const HomeWorkList = () => {
       </Typography>
       <div className={classes.root}>
         {
-          allClass.map((x) => (
-            <Item key={x.id} item={x} className={classes.heading} />
+          allHomeWork.map((x) => (
+            <Item key={x.problem_id} item={x} className={classes.heading} />
           ))
         }
       </div>
