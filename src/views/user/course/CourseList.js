@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import JSONbig from 'json-bigint';
 import {
   Grid, Typography, Card, CardActions, CardContent,
@@ -88,7 +89,7 @@ const Item = (props) => {
               </Typography>
             </Grid>
             <CardActions>
-              <Grid container justify="flex-end">
+              <Grid container justifyContent="flex-end">
                 <Grid item md={4} xs={6}>
                   <CourseItemLink fullWidth color="primary" variant="contained"
                     onClick={() => { goToHomeworkList(); history.push(`/course/homeWorklist/${x.class_id}`); }}>
@@ -108,19 +109,27 @@ const Item = (props) => {
 const CourseList = () => {
   const classes = useStyles();
   const [allCourse, setAllCourse] = useState([]);
-
+  const options = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+  };
   const showCourseList = () => {
     const token = localStorage.getItem('token');
     getCourseList(token)
       .then((rs) => {
         var data = JSONbig.parse(rs.data);
-        // console.log(data.classes[0].toString())
+        console.log(data.classes[0].toString())
         const tempClassID = data.classes;
         const classData = [];
         getClassIndiData(token, tempClassID, classData);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        toast.error(err.response.data.message, options);
+
       })
   }
   useEffect(() => {
@@ -147,7 +156,7 @@ const CourseList = () => {
       <Typography align="center" variant="h4">
         課程清單
       </Typography>
-      <Grid container justify="center" spacing={1} className={classes.root}>
+      <Grid container justifyContent="center" spacing={1} className={classes.root}>
         {
           allCourse.map((x) => (
             <Item key={x.class_id} item={x} className={classes.heading} />
