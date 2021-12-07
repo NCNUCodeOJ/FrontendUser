@@ -1,5 +1,6 @@
 import axios from 'axios';
-const serverURL = "https://precode.ptass.org/api";
+const host = "https://precode.ptass.org";
+const serverURL = host + "/api";
 axios.defaults.withCredentials = true
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";

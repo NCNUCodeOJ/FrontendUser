@@ -128,8 +128,9 @@ const CourseList = () => {
         getClassIndiData(token, tempClassID, classData);
       })
       .catch((err) => {
-        toast.error(err.response.data.message, options);
-
+        if (err.response) {
+          toast.error(err.response.data.message, options);
+        }
       })
   }
   useEffect(() => {

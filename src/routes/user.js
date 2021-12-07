@@ -31,7 +31,7 @@ const routes = [
   { path: '/course', exact: true, name: '課程清單', component: CourseList },
   { path: '/course/examlist/:id', exact: true, name: '測驗清單', component: ExamList },
   { path: '/course/examinfo/:id', exact: true, name: '測驗內容', component: ExamInfo },
-  { path: '/course/homeworkinfo/:id', exact: true, name: '作業內容', component: HomeworkInfo },
+  { path: '/course/homeworkinfo/:cid/:pid', exact: true, name: '作業內容', component: HomeworkInfo },
   { path: '/course/homeworklist/:id', exact: true, name: '作業清單', component: HomeWorkList },
   { path: '/login/forgetpassword', exact: true, name: '忘記密碼', component: ForgetPassword },
   { path: '/contest/contestlist', exact: true, name: '比賽清單', component: ContestList },

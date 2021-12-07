@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import JSONbig from 'json-bigint';
 import {
   Grid, Typography,
@@ -11,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBookOpen, faClock
 } from '@fortawesome/free-solid-svg-icons';
-import { getProblemList, getProblemInfo } from 'src/api/user/problem/api';
+import { getHomeWorkList, getHomeWorkInfo } from 'src/api/user/problem/api';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +98,7 @@ const Item = (props) => {
             <Grid item md={4} xs={12}>
               <Button fullWidth color="primary"
                 variant="contained"
-                onClick={() => history.push(`/course/homeworkinfo/${x.problem_id}`)}>
+                onClick={() => history.push(`/course/homeworkinfo/${props.classID}/${x.problem_id}`)}>
                 進入
               </Button>
             </Grid>
@@ -116,9 +117,17 @@ const HomeWorkList = ({ match }) => {
   const classes = useStyles();
   const [allHomeWork, setAllHomeWork] = useState([]);
 
+  const options = {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: true,
+    draggable: true,
+  };
   const showHomeWorkList = () => {
     const token = localStorage.getItem('token');
-    getProblemList(token, classID)
+    getHomeWorkList(token, classID)
       .then((rs) => {
         var data = JSONbig.parse(rs.data);
         // console.log('ProblemID ' + data.problems[1].toString())
@@ -126,20 +135,29 @@ const HomeWorkList = ({ match }) => {
         const homeWorkData = [];
         getHomeworkIndiData(token, tempHWID, classID, homeWorkData);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.data.message, options);
+        }
       })
   }
-
   useEffect(() => {
     showHomeWorkList();
   }, []);
 
   function getHomeworkIndiData(token, tempHWID, classID, homeWorkData) {
+    const options = {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+    };
     let temp = null;
     temp = tempHWID.pop();
     // console.log('ProblemID-- ' + temp.toString());
-    getProblemInfo(token, classID, temp.toString())
+    getHomeWorkInfo(token, classID, temp.toString())
       .then((rs) => {
         rs.data.problem_id = temp.toString();
         rs.data.class_id = classID;
@@ -151,6 +169,11 @@ const HomeWorkList = ({ match }) => {
           setAllHomeWork(homeWorkData);
         }
       })
+      .catch((err) => {
+        if (err.response) {
+          toast.error(err.response.data.message, options);
+        }
+      })
   }
   return (
     <>
@@ -159,9 +182,7 @@ const HomeWorkList = ({ match }) => {
       </Typography>
       <div className={classes.root}>
         {
-          allHomeWork.map((x) => (
-            <Item key={x.problem_id} item={x} className={classes.heading} />
-          ))
+          allHomeWork.map((x) => (<Item key={x.problem_id} item={x} className={classes.heading} classID={classID} />))
         }
       </div>
     </>
