@@ -142,7 +142,7 @@ const HomeWorkInfo = ({ match }) => {
       .then((rs) => {
         console.log(rs.data);
         var data = JSONbig.parse(rs.data);
-        console.log(data.score.toString());
+        setSubmitScore(data.score.toString());
 
       })
       .catch((err) => {
@@ -375,7 +375,7 @@ const HomeWorkInfo = ({ match }) => {
                 分數:
               </WhiteTextTypography>
               <WhiteTextTypography variant="h2" align="center" >
-                0
+                {submitScore}
               </WhiteTextTypography>
             </Card>
           </Grid>
