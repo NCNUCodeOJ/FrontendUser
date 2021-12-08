@@ -89,7 +89,7 @@ const AnnouncementList = () => {
       <Typography align="center" variant="h4">
         最新消息公告
       </Typography>
-      <div className={classes.root} announcement={announcement}>
+      <div className={classes.root}>
         {
           announcement.map((x) => (
             <Item key={x.announcement_id} item={x} className={classes.heading} />
