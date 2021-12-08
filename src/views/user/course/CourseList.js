@@ -59,13 +59,14 @@ const Item = (props) => {
               </ListItemIcon>
               <ListItemText primary="返回" />
             </ListItemLink>
-            <ListItemLink href={`#course/examlist/${x.id}`}>
+            <ListItemLink
+              onClick={() => { goToHomeworkList(); history.push(`/course/examlist/${x.class_id}`); }}>
               <ListItemIcon>
                 <Code />
               </ListItemIcon>
               <ListItemText primary="測驗" />
             </ListItemLink>
-            <ListItemLink href={`#course/homeworklist/${x.id}`}>
+            <ListItemLink onClick={() => { goToHomeworkList(); history.push(`/course/homeWorklist/${x.class_id}`); }}>
               <ListItemIcon>
                 <Keyboard />
               </ListItemIcon>
@@ -151,6 +152,7 @@ const CourseList = () => {
         }
       })
   }
+  console.log(allCourse);
 
   return (
     <>

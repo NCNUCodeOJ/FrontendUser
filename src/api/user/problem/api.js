@@ -1,10 +1,11 @@
 import axios from 'axios';
-const serverURL = "https://precode.ptass.org/api";
+const host = "https://precode.ptass.org";
+const serverURL = host + "/api";
 axios.defaults.withCredentials = true
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-const getProblemList = (userToken, classID) => {
+const getHomeWorkList = (userToken, classID) => {
   const authAxios = axios.create({
     baseURL: serverURL,
     headers: {
@@ -14,7 +15,7 @@ const getProblemList = (userToken, classID) => {
   return authAxios.get(`${serverURL}/v1/class/${classID}/problem`, { transformResponse: [data => data] })
 };
 
-const getProblemInfo = (userToken, classID, problemID) => {
+const getHomeWorkInfo = (userToken, classID, problemID) => {
   const authAxios = axios.create({
     baseURL: serverURL,
     headers: {
@@ -23,6 +24,26 @@ const getProblemInfo = (userToken, classID, problemID) => {
   })
   return authAxios.get(`${serverURL}/v1/class/${classID}/problem/${problemID}`)
 };
+
+const createHomeWork = (userToken, classID, problemID, submissionData) => {
+  const authAxios = axios.create({
+    baseURL: serverURL,
+    headers: {
+      Authorization: `Bearer ${userToken}`
+    },
+  })
+  return authAxios.post(`${serverURL}/v1/class/${classID}/problem/${problemID}/submission`, submissionData,{ transformResponse: [data => data] })
+};
+
+const getHomeWorkSubmission = (userToken, classID, problemID,submissionID) => {
+  const authAxios = axios.create({
+    baseURL: serverURL,
+    headers: {
+      Authorization: `Bearer ${userToken}`
+    },
+  })
+  return authAxios.get(`${serverURL}/v1/class/${classID}/problem/${problemID}/submission/${submissionID}`, { transformResponse: [data => data] })
+};
 export {
-  getProblemList, getProblemInfo
+  getHomeWorkList, getHomeWorkInfo, createHomeWork, getHomeWorkSubmission
 };

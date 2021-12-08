@@ -127,6 +127,7 @@ const HomeWorkList = ({ match }) => {
   };
   const showHomeWorkList = () => {
     const token = localStorage.getItem('token');
+    console.log(token);
     getHomeWorkList(token, classID)
       .then((rs) => {
         var data = JSONbig.parse(rs.data);
